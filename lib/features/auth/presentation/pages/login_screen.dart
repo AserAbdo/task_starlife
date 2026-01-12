@@ -20,8 +20,9 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen>
     with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  // Pre-filled with test credentials for easy testing
+  final _emailController = TextEditingController(text: 'test@starlife.com');
+  final _passwordController = TextEditingController(text: 'password123');
   bool _obscurePassword = true;
 
   late AnimationController _animationController;
@@ -127,15 +128,16 @@ class _LoginScreenState extends State<LoginScreen>
         listener: (context, state) {
           if (state is LoginSuccess) {
             _showSuccessSnackBar(context);
-            // Store navigator before async gap
+            // Store navigator and email before async gap
             final navigator = Navigator.of(context);
+            final userEmail = state.user.email;
             // Navigate to home after a short delay
             Future.delayed(const Duration(milliseconds: 500), () {
               if (mounted) {
                 navigator.pushReplacement(
                   PageRouteBuilder(
                     pageBuilder: (context, animation, secondaryAnimation) =>
-                        const HomeScreen(),
+                        HomeScreen(email: userEmail),
                     transitionsBuilder:
                         (context, animation, secondaryAnimation, child) {
                           return FadeTransition(

@@ -1,82 +1,106 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/gradient_background.dart';
+import '../../../profile/presentation/pages/profile_screen.dart';
 
 /// Home screen shown after successful login
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  final String email;
+
+  const HomeScreen({super.key, this.email = 'user@starlife.com'});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GradientBackground(
-        child: SafeArea(
-          child: Column(
-            children: [
-              // App Bar
-              _buildAppBar(context),
-
-              // Content
-              Expanded(
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.all(24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Welcome Card
-                      _buildWelcomeCard(),
-
-                      const SizedBox(height: 24),
-
-                      // Quick Actions
-                      const Text(
-                        'Quick Actions',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.white,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      _buildQuickActions(),
-
-                      const SizedBox(height: 24),
-
-                      // Recent Activity
-                      const Text(
-                        'Services',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.white,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      _buildServicesList(),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+      body: IndexedStack(
+        index: _currentIndex,
+        children: [
+          _buildHomeContent(),
+          ProfileScreen(email: widget.email),
+        ],
       ),
       bottomNavigationBar: _buildBottomNav(),
     );
   }
 
+  Widget _buildHomeContent() {
+    return GradientBackground(
+      child: SafeArea(
+        top: false,
+        bottom: false,
+        child: Column(
+          children: [
+            const SizedBox(height: 16),
+
+            // App Bar
+            _buildAppBar(context),
+
+            // Content
+            Expanded(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Welcome Card
+                    _buildWelcomeCard(),
+
+                    const SizedBox(height: 24),
+
+                    // Quick Actions
+                    const Text(
+                      'Quick Actions',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildQuickActions(),
+
+                    const SizedBox(height: 24),
+
+                    // Services
+                    const Text(
+                      'Services',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildServicesList(),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildAppBar(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       child: Row(
         children: [
           // Logo
           Hero(
             tag: 'logo',
             child: Container(
-              width: 48,
-              height: 48,
+              width: 44,
+              height: 44,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 boxShadow: [
@@ -93,11 +117,11 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 12),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   'Star Life',
                   style: TextStyle(
                     fontSize: 18,
@@ -106,8 +130,12 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'Welcome back!',
-                  style: TextStyle(fontSize: 12, color: AppColors.primaryGold),
+                  'Welcome, ${widget.email.split('@').first}!',
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: AppColors.primaryGold,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
@@ -124,6 +152,7 @@ class HomeScreen extends StatelessWidget {
               icon: const Icon(
                 Icons.notifications_outlined,
                 color: AppColors.white,
+                size: 22,
               ),
               onPressed: () {},
             ),
@@ -136,7 +165,7 @@ class HomeScreen extends StatelessWidget {
   Widget _buildWelcomeCard() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: AppColors.goldGradient,
         borderRadius: BorderRadius.circular(24),
@@ -154,16 +183,16 @@ class HomeScreen extends StatelessWidget {
           Row(
             children: [
               Container(
-                width: 56,
-                height: 56,
+                width: 50,
+                height: 50,
                 decoration: BoxDecoration(
                   color: AppColors.deepPurple20,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(14),
                 ),
                 child: const Icon(
                   Icons.verified_user,
                   color: AppColors.deepPurple,
-                  size: 32,
+                  size: 28,
                 ),
               ),
               const SizedBox(width: 16),
@@ -174,16 +203,16 @@ class HomeScreen extends StatelessWidget {
                     Text(
                       'Login Successful!',
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: AppColors.deepPurple,
                       ),
                     ),
-                    SizedBox(height: 4),
+                    SizedBox(height: 2),
                     Text(
                       'You are now connected to Star Life',
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 13,
                         color: AppColors.deepPurple,
                       ),
                     ),
@@ -192,23 +221,24 @@ class HomeScreen extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(
               color: AppColors.deepPurple15,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(10),
             ),
             child: const Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.star, color: AppColors.deepPurple, size: 18),
-                SizedBox(width: 8),
+                Icon(Icons.star, color: AppColors.deepPurple, size: 16),
+                SizedBox(width: 6),
                 Text(
                   'Premium Member',
                   style: TextStyle(
                     color: AppColors.deepPurple,
                     fontWeight: FontWeight.w600,
+                    fontSize: 13,
                   ),
                 ),
               ],
@@ -254,7 +284,6 @@ class HomeScreen extends StatelessWidget {
     required String title,
     required Color color,
   }) {
-    // Create opacity variants for the color
     final colorWithOpacity20 = Color.fromRGBO(
       color.r.toInt(),
       color.g.toInt(),
@@ -263,7 +292,7 @@ class HomeScreen extends StatelessWidget {
     );
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 20),
+      padding: const EdgeInsets.symmetric(vertical: 18),
       decoration: BoxDecoration(
         color: AppColors.white10,
         borderRadius: BorderRadius.circular(16),
@@ -272,20 +301,20 @@ class HomeScreen extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            width: 48,
-            height: 48,
+            width: 44,
+            height: 44,
             decoration: BoxDecoration(
               color: colorWithOpacity20,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(icon, color: color, size: 24),
+            child: Icon(icon, color: color, size: 22),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
           Text(
             title,
             style: const TextStyle(
               color: AppColors.white,
-              fontSize: 12,
+              fontSize: 11,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -334,7 +363,7 @@ class HomeScreen extends StatelessWidget {
 
         return Container(
           margin: const EdgeInsets.only(bottom: 12),
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: AppColors.white10,
             borderRadius: BorderRadius.circular(16),
@@ -343,19 +372,19 @@ class HomeScreen extends StatelessWidget {
           child: Row(
             children: [
               Container(
-                width: 52,
-                height: 52,
+                width: 48,
+                height: 48,
                 decoration: BoxDecoration(
                   color: colorWithOpacity20,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
                   service['icon'] as IconData,
                   color: color,
-                  size: 26,
+                  size: 24,
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 14),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -364,16 +393,16 @@ class HomeScreen extends StatelessWidget {
                       service['title'] as String,
                       style: const TextStyle(
                         color: AppColors.white,
-                        fontSize: 16,
+                        fontSize: 15,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 2),
                     Text(
                       service['subtitle'] as String,
                       style: const TextStyle(
                         color: AppColors.white60,
-                        fontSize: 13,
+                        fontSize: 12,
                       ),
                     ),
                   ],
@@ -382,7 +411,7 @@ class HomeScreen extends StatelessWidget {
               const Icon(
                 Icons.arrow_forward_ios,
                 color: AppColors.white50,
-                size: 16,
+                size: 14,
               ),
             ],
           ),
@@ -404,15 +433,14 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       child: SafeArea(
+        top: false,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildNavItem(Icons.home_filled, 'Home', true),
-              _buildNavItem(Icons.search, 'Search', false),
-              _buildNavItem(Icons.favorite_outline, 'Favorites', false),
-              _buildNavItem(Icons.person_outline, 'Profile', false),
+              _buildNavItem(Icons.home_filled, 'Home', 0),
+              _buildNavItem(Icons.person_outline, 'Profile', 1),
             ],
           ),
         ),
@@ -420,34 +448,49 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildNavItem(IconData icon, String label, bool isActive) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          padding: const EdgeInsets.all(10),
-          decoration: isActive
-              ? BoxDecoration(
-                  color: AppColors.gold20,
-                  borderRadius: BorderRadius.circular(12),
-                )
-              : null,
-          child: Icon(
-            icon,
-            color: isActive ? AppColors.primaryGold : AppColors.white50,
-            size: 24,
-          ),
+  Widget _buildNavItem(IconData icon, String label, int index) {
+    final isActive = _currentIndex == index;
+
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _currentIndex = index;
+        });
+      },
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: isActive
+                  ? BoxDecoration(
+                      color: AppColors.gold20,
+                      borderRadius: BorderRadius.circular(12),
+                    )
+                  : null,
+              child: Icon(
+                isActive
+                    ? (index == 0 ? Icons.home_filled : Icons.person)
+                    : icon,
+                color: isActive ? AppColors.primaryGold : AppColors.white50,
+                size: 24,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: TextStyle(
+                color: isActive ? AppColors.primaryGold : AppColors.white50,
+                fontSize: 11,
+                fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
+              ),
+            ),
+          ],
         ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: TextStyle(
-            color: isActive ? AppColors.primaryGold : AppColors.white50,
-            fontSize: 11,
-            fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
-          ),
-        ),
-      ],
+      ),
     );
   }
 }
