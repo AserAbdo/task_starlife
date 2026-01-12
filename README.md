@@ -155,11 +155,16 @@ dependencies:
 
 ### Test Credentials
 
-The app uses [reqres.in](https://reqres.in) as a mock API. Use these credentials to test:
+The app uses a mock authentication system for testing. Use any of these credentials:
 
 | Email | Password |
 |-------|----------|
-| `eve.holt@reqres.in` | `cityslicka` |
+| `test@starlife.com` | `password123` |
+| `admin@starlife.com` | `admin123` |
+| `demo@demo.com` | `demo123` |
+| `user@example.com` | `123456` |
+
+**Note:** You can also use any valid email format with a password of 6+ characters.
 
 ## 🎨 Color Palette
 

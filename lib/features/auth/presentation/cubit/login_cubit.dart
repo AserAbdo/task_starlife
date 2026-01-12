@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/repositories/auth_repository.dart';
 import 'login_state.dart';
@@ -22,28 +21,12 @@ class LoginCubit extends Cubit<LoginState> {
       );
 
       emit(LoginSuccess(user: user));
-    } on DioException catch (e) {
-      String errorMessage = 'An error occurred. Please try again.';
-
-      if (e.response != null) {
-        final data = e.response?.data;
-        if (data is Map<String, dynamic> && data.containsKey('error')) {
-          errorMessage = data['error'] as String;
-        } else if (e.response?.statusCode == 400) {
-          errorMessage = 'Invalid email or password';
-        } else if (e.response?.statusCode == 401) {
-          errorMessage = 'Unauthorized. Please check your credentials.';
-        }
-      } else if (e.type == DioExceptionType.connectionTimeout ||
-          e.type == DioExceptionType.receiveTimeout) {
-        errorMessage = 'Connection timeout. Please check your internet.';
-      } else if (e.type == DioExceptionType.connectionError) {
-        errorMessage = 'No internet connection.';
-      }
-
-      emit(LoginError(message: errorMessage));
+    } on AuthException catch (e) {
+      emit(LoginError(message: e.message));
     } catch (e) {
-      emit(LoginError(message: 'An unexpected error occurred: $e'));
+      emit(
+        LoginError(message: 'An unexpected error occurred. Please try again.'),
+      );
     }
   }
 
