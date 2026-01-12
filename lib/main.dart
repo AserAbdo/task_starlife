@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'core/theme/app_theme.dart';
-import 'features/auth/presentation/pages/login_screen.dart';
+import 'features/splash/presentation/pages/splash_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,7 +29,7 @@ class StarLifeApp extends StatelessWidget {
       title: 'Star Life',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.darkTheme,
-      home: const LoginScreen(),
+      home: const SplashScreen(),
     );
   }
 }

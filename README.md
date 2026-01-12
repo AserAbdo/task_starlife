@@ -20,9 +20,21 @@
 
 ## 📱 About
 
-Star Life is a beautifully designed Flutter application built as a technical assessment. It showcases professional UI development, clean architecture patterns, state management with Cubit, and API integration.
+**Star Life Company** - شركة ستار لايف للخدمات البرمجية والدعاية والإعلان
+
+A company specialized in software services and advertising 💻✨
+
+We offer our exceptional services to individuals, businesses, and organizations 🌟🤝
+
+This Flutter application is built as a technical assessment showcasing professional UI development, clean architecture patterns, state management with Cubit, and API integration.
 
 ## ✨ Features
+
+### 🚀 Splash Screen
+- Animated logo with pulsing glow effect
+- Gradient text with Star Life branding
+- Arabic and English company name
+- Smooth fade transition to login
 
 ### 🔐 Authentication
 - **Login Screen** with email and password
@@ -32,6 +44,7 @@ Star Life is a beautifully designed Flutter application built as a technical ass
 - API integration with [reqres.in](https://reqres.in) test API
 - Loading states and error handling
 - Success feedback with navigation
+- Social login buttons (Google, Apple, Facebook)
 
 ### 🏠 Home Screen
 - Welcome card with user status
@@ -42,7 +55,7 @@ Star Life is a beautifully designed Flutter application built as a technical ass
 
 ### 🎨 UI/UX
 - Purple and gold color scheme extracted from Star Life branding
-- Animated gradient backgrounds
+- Animated gradient backgrounds with twinkling stars
 - Smooth transitions and micro-animations
 - Custom buttons with press effects
 - Glowing text fields on focus
@@ -68,6 +81,11 @@ lib/
 │       └── gradient_background.dart # Animated background
 │
 ├── features/                      # Feature modules
+│   ├── splash/
+│   │   └── presentation/
+│   │       └── pages/
+│   │           └── splash_screen.dart
+│   │
 │   ├── auth/
 │   │   ├── data/
 │   │   │   ├── models/

@@ -77,51 +77,26 @@ class _LoginScreenState extends State<LoginScreen>
     }
   }
 
-  void _showSuccessDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        backgroundColor: AppColors.deepPurple,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-          side: const BorderSide(color: AppColors.gold30, width: 1),
-        ),
-        title: const Row(
+  void _showSuccessSnackBar(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Row(
           children: [
-            Icon(Icons.check_circle, color: AppColors.success, size: 32),
+            Icon(Icons.check_circle, color: AppColors.white),
             SizedBox(width: 12),
-            Text(
-              'Success!',
-              style: TextStyle(
-                color: AppColors.white,
-                fontWeight: FontWeight.bold,
+            Expanded(
+              child: Text(
+                'Login successful! Welcome to Star Life',
+                style: TextStyle(color: AppColors.white),
               ),
             ),
           ],
         ),
-        content: const Text(
-          'You have successfully logged in to Star Life!',
-          style: TextStyle(color: AppColors.white),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const HomeScreen()),
-              );
-            },
-            child: const Text(
-              'Continue',
-              style: TextStyle(
-                color: AppColors.primaryGold,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ],
+        backgroundColor: AppColors.success,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        margin: const EdgeInsets.all(16),
+        duration: const Duration(seconds: 2),
       ),
     );
   }
@@ -151,7 +126,40 @@ class _LoginScreenState extends State<LoginScreen>
       child: BlocConsumer<LoginCubit, LoginState>(
         listener: (context, state) {
           if (state is LoginSuccess) {
-            _showSuccessDialog(context);
+            _showSuccessSnackBar(context);
+            // Store navigator before async gap
+            final navigator = Navigator.of(context);
+            // Navigate to home after a short delay
+            Future.delayed(const Duration(milliseconds: 500), () {
+              if (mounted) {
+                navigator.pushReplacement(
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) =>
+                        const HomeScreen(),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                          return FadeTransition(
+                            opacity: animation,
+                            child: SlideTransition(
+                              position:
+                                  Tween<Offset>(
+                                    begin: const Offset(1.0, 0.0),
+                                    end: Offset.zero,
+                                  ).animate(
+                                    CurvedAnimation(
+                                      parent: animation,
+                                      curve: Curves.easeOutCubic,
+                                    ),
+                                  ),
+                              child: child,
+                            ),
+                          );
+                        },
+                    transitionDuration: const Duration(milliseconds: 500),
+                  ),
+                );
+              }
+            });
           } else if (state is LoginError) {
             _showErrorSnackBar(context, state.message);
           }
@@ -362,33 +370,208 @@ class _LoginScreenState extends State<LoginScreen>
   }
 
   Widget _buildSocialLogin() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _buildSocialButton(Icons.g_mobiledata_rounded, 'Google'),
-        const SizedBox(width: 16),
-        _buildSocialButton(Icons.apple, 'Apple'),
-        const SizedBox(width: 16),
-        _buildSocialButton(Icons.facebook, 'Facebook'),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Use expanded buttons for wider screens
+        final isWideScreen = constraints.maxWidth > 320;
+
+        if (isWideScreen) {
+          return Column(
+            children: [
+              // Google button - full width with label
+              _buildSocialButtonExpanded(
+                imagePath: 'assets/google.png',
+                label: 'Continue with Google',
+                onTap: () {
+                  // TODO: Implement Google login
+                },
+              ),
+              const SizedBox(height: 12),
+              // Row with Apple and Facebook
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildSocialButtonMedium(
+                      icon: Icons.apple,
+                      label: 'Apple',
+                      onTap: () {
+                        // TODO: Implement Apple login
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _buildSocialButtonMedium(
+                      icon: Icons.facebook,
+                      label: 'Facebook',
+                      iconColor: const Color(0xFF1877F2),
+                      onTap: () {
+                        // TODO: Implement Facebook login
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+        } else {
+          // Compact version for narrow screens
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildSocialButtonCompact(
+                imagePath: 'assets/google.png',
+                onTap: () {},
+              ),
+              const SizedBox(width: 16),
+              _buildSocialButtonCompact(icon: Icons.apple, onTap: () {}),
+              const SizedBox(width: 16),
+              _buildSocialButtonCompact(
+                icon: Icons.facebook,
+                iconColor: const Color(0xFF1877F2),
+                onTap: () {},
+              ),
+            ],
+          );
+        }
+      },
     );
   }
 
-  Widget _buildSocialButton(IconData icon, String label) {
-    return Container(
-      width: 56,
-      height: 56,
-      decoration: BoxDecoration(
-        color: AppColors.white10,
+  Widget _buildSocialButtonExpanded({
+    String? imagePath,
+    IconData? icon,
+    required String label,
+    Color? iconColor,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.white20),
+        child: Container(
+          width: double.infinity,
+          height: 56,
+          decoration: BoxDecoration(
+            color: AppColors.white10,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.white20),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (imagePath != null)
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.asset(
+                    imagePath,
+                    width: 24,
+                    height: 24,
+                    fit: BoxFit.contain,
+                  ),
+                )
+              else if (icon != null)
+                Icon(icon, color: iconColor ?? AppColors.white, size: 24),
+              const SizedBox(width: 12),
+              Text(
+                label,
+                style: const TextStyle(
+                  color: AppColors.white,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
-      child: IconButton(
-        onPressed: () {
-          // TODO: Implement social login
-        },
-        icon: Icon(icon, color: AppColors.white, size: 28),
-        tooltip: label,
+    );
+  }
+
+  Widget _buildSocialButtonMedium({
+    String? imagePath,
+    IconData? icon,
+    required String label,
+    Color? iconColor,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          height: 52,
+          decoration: BoxDecoration(
+            color: AppColors.white10,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.white20),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (imagePath != null)
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(6),
+                  child: Image.asset(
+                    imagePath,
+                    width: 22,
+                    height: 22,
+                    fit: BoxFit.contain,
+                  ),
+                )
+              else if (icon != null)
+                Icon(icon, color: iconColor ?? AppColors.white, size: 22),
+              const SizedBox(width: 8),
+              Text(
+                label,
+                style: const TextStyle(
+                  color: AppColors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSocialButtonCompact({
+    String? imagePath,
+    IconData? icon,
+    Color? iconColor,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          width: 56,
+          height: 56,
+          decoration: BoxDecoration(
+            color: AppColors.white10,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.white20),
+          ),
+          child: Center(
+            child: imagePath != null
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.asset(
+                      imagePath,
+                      width: 28,
+                      height: 28,
+                      fit: BoxFit.contain,
+                    ),
+                  )
+                : Icon(icon, color: iconColor ?? AppColors.white, size: 28),
+          ),
+        ),
       ),
     );
   }
