@@ -170,101 +170,113 @@ class _LoginScreenState extends State<LoginScreen>
           return Scaffold(
             body: GradientBackground(
               child: SafeArea(
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: FadeTransition(
-                      opacity: _fadeAnimation,
-                      child: SlideTransition(
-                        position: _slideAnimation,
-                        child: Form(
-                          key: _formKey,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const SizedBox(height: 40),
+                top: false,
+                bottom: false,
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return SingleChildScrollView(
+                      physics: const ClampingScrollPhysics(),
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight: constraints.maxHeight,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          child: FadeTransition(
+                            opacity: _fadeAnimation,
+                            child: SlideTransition(
+                              position: _slideAnimation,
+                              child: Form(
+                                key: _formKey,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const SizedBox(height: 32),
 
-                              // Logo
-                              _buildLogo(),
+                                    // Logo - smaller
+                                    _buildLogo(),
 
-                              const SizedBox(height: 24),
+                                    const SizedBox(height: 16),
 
-                              // Welcome text
-                              _buildWelcomeText(),
+                                    // Welcome text
+                                    _buildWelcomeText(),
 
-                              const SizedBox(height: 48),
+                                    const SizedBox(height: 28),
 
-                              // Email field
-                              CustomTextField(
-                                controller: _emailController,
-                                label: 'Email',
-                                hint: 'Enter your email',
-                                prefixIcon: Icons.email_outlined,
-                                keyboardType: TextInputType.emailAddress,
-                                textInputAction: TextInputAction.next,
-                                validator: Validators.validateEmail,
-                              ),
+                                    // Email field
+                                    CustomTextField(
+                                      controller: _emailController,
+                                      label: 'Email',
+                                      hint: 'Enter your email',
+                                      prefixIcon: Icons.email_outlined,
+                                      keyboardType: TextInputType.emailAddress,
+                                      textInputAction: TextInputAction.next,
+                                      validator: Validators.validateEmail,
+                                    ),
 
-                              const SizedBox(height: 20),
+                                    const SizedBox(height: 14),
 
-                              // Password field
-                              CustomTextField(
-                                controller: _passwordController,
-                                label: 'Password',
-                                hint: 'Enter your password',
-                                prefixIcon: Icons.lock_outline,
-                                obscureText: _obscurePassword,
-                                textInputAction: TextInputAction.done,
-                                validator: Validators.validatePassword,
-                                onFieldSubmitted: (_) => _onLogin(context),
-                                suffixIcon: IconButton(
-                                  icon: Icon(
-                                    _obscurePassword
-                                        ? Icons.visibility_outlined
-                                        : Icons.visibility_off_outlined,
-                                    color: AppColors.white70,
-                                  ),
-                                  onPressed: _togglePasswordVisibility,
+                                    // Password field
+                                    CustomTextField(
+                                      controller: _passwordController,
+                                      label: 'Password',
+                                      hint: 'Enter your password',
+                                      prefixIcon: Icons.lock_outline,
+                                      obscureText: _obscurePassword,
+                                      textInputAction: TextInputAction.done,
+                                      validator: Validators.validatePassword,
+                                      onFieldSubmitted: (_) =>
+                                          _onLogin(context),
+                                      suffixIcon: IconButton(
+                                        icon: Icon(
+                                          _obscurePassword
+                                              ? Icons.visibility_outlined
+                                              : Icons.visibility_off_outlined,
+                                          color: AppColors.white70,
+                                        ),
+                                        onPressed: _togglePasswordVisibility,
+                                      ),
+                                    ),
+
+                                    const SizedBox(height: 6),
+
+                                    // Forgot password
+                                    _buildForgotPassword(),
+
+                                    const SizedBox(height: 20),
+
+                                    // Login button
+                                    CustomButton(
+                                      text: 'Login',
+                                      isLoading: isLoading,
+                                      onPressed: () => _onLogin(context),
+                                    ),
+
+                                    const SizedBox(height: 20),
+
+                                    // Divider
+                                    _buildDivider(),
+
+                                    const SizedBox(height: 20),
+
+                                    // Social login buttons - just 3 icons
+                                    _buildSocialLogin(),
+
+                                    const SizedBox(height: 20),
+
+                                    // Sign up link
+                                    _buildSignUpLink(),
+
+                                    const SizedBox(height: 24),
+                                  ],
                                 ),
                               ),
-
-                              const SizedBox(height: 12),
-
-                              // Forgot password
-                              _buildForgotPassword(),
-
-                              const SizedBox(height: 32),
-
-                              // Login button
-                              CustomButton(
-                                text: 'Login',
-                                isLoading: isLoading,
-                                onPressed: () => _onLogin(context),
-                              ),
-
-                              const SizedBox(height: 24),
-
-                              // Divider
-                              _buildDivider(),
-
-                              const SizedBox(height: 24),
-
-                              // Social login buttons
-                              _buildSocialLogin(),
-
-                              const SizedBox(height: 32),
-
-                              // Sign up link
-                              _buildSignUpLink(),
-
-                              const SizedBox(height: 24),
-                            ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
+                    );
+                  },
                 ),
               ),
             ),
@@ -278,12 +290,12 @@ class _LoginScreenState extends State<LoginScreen>
     return Hero(
       tag: 'logo',
       child: Container(
-        width: 140,
-        height: 140,
+        width: 100,
+        height: 100,
         decoration: const BoxDecoration(
           shape: BoxShape.circle,
           boxShadow: [
-            BoxShadow(color: AppColors.gold30, blurRadius: 30, spreadRadius: 5),
+            BoxShadow(color: AppColors.gold30, blurRadius: 25, spreadRadius: 3),
           ],
         ),
         child: ClipOval(
@@ -299,16 +311,16 @@ class _LoginScreenState extends State<LoginScreen>
         Text(
           'Welcome Back!',
           style: TextStyle(
-            fontSize: 28,
+            fontSize: 24,
             fontWeight: FontWeight.bold,
             color: AppColors.white,
             letterSpacing: 0.5,
           ),
         ),
-        SizedBox(height: 8),
+        SizedBox(height: 6),
         Text(
           'Sign in to continue to Star Life',
-          style: TextStyle(fontSize: 16, color: AppColors.white70),
+          style: TextStyle(fontSize: 14, color: AppColors.white70),
         ),
       ],
     );
@@ -321,11 +333,17 @@ class _LoginScreenState extends State<LoginScreen>
         onPressed: () {
           // TODO: Implement forgot password
         },
+        style: TextButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          minimumSize: Size.zero,
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        ),
         child: const Text(
           'Forgot Password?',
           style: TextStyle(
             color: AppColors.primaryGold,
             fontWeight: FontWeight.w500,
+            fontSize: 13,
           ),
         ),
       ),
@@ -352,6 +370,7 @@ class _LoginScreenState extends State<LoginScreen>
             style: TextStyle(
               color: AppColors.white50,
               fontWeight: FontWeight.w500,
+              fontSize: 12,
             ),
           ),
         ),
@@ -370,129 +389,40 @@ class _LoginScreenState extends State<LoginScreen>
   }
 
   Widget _buildSocialLogin() {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        // Use expanded buttons for wider screens
-        final isWideScreen = constraints.maxWidth > 320;
-
-        if (isWideScreen) {
-          return Column(
-            children: [
-              // Google button - full width with label
-              _buildSocialButtonExpanded(
-                imagePath: 'assets/google.png',
-                label: 'Continue with Google',
-                onTap: () {
-                  // TODO: Implement Google login
-                },
-              ),
-              const SizedBox(height: 12),
-              // Row with Apple and Facebook
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildSocialButtonMedium(
-                      icon: Icons.apple,
-                      label: 'Apple',
-                      onTap: () {
-                        // TODO: Implement Apple login
-                      },
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _buildSocialButtonMedium(
-                      icon: Icons.facebook,
-                      label: 'Facebook',
-                      iconColor: const Color(0xFF1877F2),
-                      onTap: () {
-                        // TODO: Implement Facebook login
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          );
-        } else {
-          // Compact version for narrow screens
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _buildSocialButtonCompact(
-                imagePath: 'assets/google.png',
-                onTap: () {},
-              ),
-              const SizedBox(width: 16),
-              _buildSocialButtonCompact(icon: Icons.apple, onTap: () {}),
-              const SizedBox(width: 16),
-              _buildSocialButtonCompact(
-                icon: Icons.facebook,
-                iconColor: const Color(0xFF1877F2),
-                onTap: () {},
-              ),
-            ],
-          );
-        }
-      },
-    );
-  }
-
-  Widget _buildSocialButtonExpanded({
-    String? imagePath,
-    IconData? icon,
-    required String label,
-    Color? iconColor,
-    required VoidCallback onTap,
-  }) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Container(
-          width: double.infinity,
-          height: 56,
-          decoration: BoxDecoration(
-            color: AppColors.white10,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.white20),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (imagePath != null)
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.asset(
-                    imagePath,
-                    width: 24,
-                    height: 24,
-                    fit: BoxFit.contain,
-                  ),
-                )
-              else if (icon != null)
-                Icon(icon, color: iconColor ?? AppColors.white, size: 24),
-              const SizedBox(width: 12),
-              Text(
-                label,
-                style: const TextStyle(
-                  color: AppColors.white,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        // Google
+        _buildSocialIcon(
+          imagePath: 'assets/google.png',
+          onTap: () {
+            // TODO: Implement Google login
+          },
         ),
-      ),
+        const SizedBox(width: 20),
+        // Apple
+        _buildSocialIcon(
+          icon: Icons.apple,
+          onTap: () {
+            // TODO: Implement Apple login
+          },
+        ),
+        const SizedBox(width: 20),
+        // Facebook
+        _buildSocialIcon(
+          icon: Icons.facebook,
+          iconColor: const Color(0xFF1877F2),
+          onTap: () {
+            // TODO: Implement Facebook login
+          },
+        ),
+      ],
     );
   }
 
-  Widget _buildSocialButtonMedium({
+  Widget _buildSocialIcon({
     String? imagePath,
     IconData? icon,
-    required String label,
     Color? iconColor,
     required VoidCallback onTap,
   }) {
@@ -500,76 +430,27 @@ class _LoginScreenState extends State<LoginScreen>
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(14),
         child: Container(
+          width: 52,
           height: 52,
           decoration: BoxDecoration(
             color: AppColors.white10,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.white20),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (imagePath != null)
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(6),
-                  child: Image.asset(
-                    imagePath,
-                    width: 22,
-                    height: 22,
-                    fit: BoxFit.contain,
-                  ),
-                )
-              else if (icon != null)
-                Icon(icon, color: iconColor ?? AppColors.white, size: 22),
-              const SizedBox(width: 8),
-              Text(
-                label,
-                style: const TextStyle(
-                  color: AppColors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSocialButtonCompact({
-    String? imagePath,
-    IconData? icon,
-    Color? iconColor,
-    required VoidCallback onTap,
-  }) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Container(
-          width: 56,
-          height: 56,
-          decoration: BoxDecoration(
-            color: AppColors.white10,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(14),
             border: Border.all(color: AppColors.white20),
           ),
           child: Center(
             child: imagePath != null
                 ? ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(6),
                     child: Image.asset(
                       imagePath,
-                      width: 28,
-                      height: 28,
+                      width: 26,
+                      height: 26,
                       fit: BoxFit.contain,
                     ),
                   )
-                : Icon(icon, color: iconColor ?? AppColors.white, size: 28),
+                : Icon(icon, color: iconColor ?? AppColors.white, size: 26),
           ),
         ),
       ),
@@ -582,7 +463,7 @@ class _LoginScreenState extends State<LoginScreen>
       children: [
         const Text(
           "Don't have an account? ",
-          style: TextStyle(color: AppColors.white70),
+          style: TextStyle(color: AppColors.white70, fontSize: 13),
         ),
         TextButton(
           onPressed: () {
@@ -598,6 +479,7 @@ class _LoginScreenState extends State<LoginScreen>
             style: TextStyle(
               color: AppColors.primaryGold,
               fontWeight: FontWeight.bold,
+              fontSize: 13,
             ),
           ),
         ),
