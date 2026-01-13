@@ -61,6 +61,18 @@ This Flutter application is built as a technical assessment showcasing professio
 - Glowing text fields on focus
 - Responsive design
 
+## 📸 Screenshots
+
+<p align="center">
+  <img src="screenshots/splash.png" alt="Splash Screen" width="250">
+  <img src="screenshots/login.png" alt="Login Screen" width="250">
+  <img src="screenshots/home.png" alt="Home Screen" width="250">
+</p>
+
+| Splash Screen | Login Screen | Home Screen |
+|:-------------:|:------------:|:-----------:|
+| Animated logo with pulsing glow | Beautiful gradient form | Feature-rich dashboard |
+
 ## 🏗️ Architecture
 
 This project follows **Clean Architecture** principles with a **Feature-based** folder structure:
